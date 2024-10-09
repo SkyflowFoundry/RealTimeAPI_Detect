@@ -27,7 +27,7 @@ To visualize this workflow, please refer to the diagram in the same directory.
 3. **Install Dependencies:**
    - Run the following command to install the required dependencies:
      ```
-     pip install -r requirements.txt
+     pip install -r requirement.txt
      ```
 
 4. **Run the Script:**

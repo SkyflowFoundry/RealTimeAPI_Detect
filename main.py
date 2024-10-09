@@ -14,12 +14,12 @@ import concurrent.futures
 load_dotenv()
 
 # Set your OpenAI API key and other credentials
-API_KEY = os.getenv('API_KEY')  # Ensure to set this in your .env file
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')  # Ensure to set this in your .env file
 SKYFLOW_ACCOUNT_ID = os.getenv('SKYFLOW_ACCOUNT_ID')
-BEARER_TOKEN = os.getenv('BEARER_TOKEN')
+SKYFLOW_BEARER_TOKEN = os.getenv('SKYFLOW_BEARER_TOKEN')
 VAULT_ID = os.getenv('VAULT_ID')
-URL = os.getenv('URL')  # Base URL for the Detect API
-URL_WS = os.getenv('URL_WS') # WebSocket URL for OpenAI Realtime API
+SKYFLOW_URL = os.getenv('SKYFLOW_URL')  # Base SKYFLOW_URL for the Detect API
+OPENAI_URL_WS = os.getenv('OPENAI_URL_WS') # WebSocket url for OpenAI Realtime API
 
 # Function to record audio from microphone
 def record_audio(duration=10, fs=44100):
@@ -74,11 +74,11 @@ async def send_audio(ws, base64_audio):
 def detect_audio(file_path):
     base64_audio = convert_wav_to_base64(file_path)
     
-    url = f'{URL}/v1/detect/file'
+    url = f'{SKYFLOW_URL}/v1/detect/file'
     headers = {
         'Content-Type': 'application/json',
         'x-skyflow-account-id': SKYFLOW_ACCOUNT_ID,
-        'Authorization': f'Bearer {BEARER_TOKEN}',
+        'Authorization': f'Bearer {SKYFLOW_BEARER_TOKEN}',
     }
     
     payload = {
@@ -107,8 +107,8 @@ def detect_audio(file_path):
 
 # Function to check processing status
 def check_status(status_id):
-    url = f'{URL}/v1/detect/status/{status_id}?vault_id={VAULT_ID}'
-    headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
+    url = f'{SKYFLOW_URL}/v1/detect/status/{status_id}?vault_id={VAULT_ID}'
+    headers = {'Authorization': f'Bearer {SKYFLOW_BEARER_TOKEN}'}
     
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
@@ -149,9 +149,9 @@ async def main():
                         base64_audio = audio_to_base64(processed_audio_path)
                         
                         async with websockets.connect(
-                            URL_WS,
+                            OPENAI_URL_WS,
                             extra_headers={
-                                "Authorization": f"Bearer {API_KEY}",
+                                "Authorization": f"Bearer {OPENAI_API_KEY}",
                                 "OpenAI-Beta": "realtime=v1"
                             }
                         ) as ws:
